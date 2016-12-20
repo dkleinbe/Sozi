@@ -4,6 +4,7 @@ vendor
 bower_components
 build
 cache
+tmp
 /js/backend/GoogleDrive.config.js
 npm-debug.log
 buildConfig*.js
