@@ -344,6 +344,13 @@ Timeline.render = function () {
                                 evt.stopPropagation();
                             }
                         }),
+                        h("i.insert-before.fa.fa-arrow-circle-down", {
+                            title: Jed.sprintf(_("Reset selection %d"), frameIndex + 1),
+                            onclick(evt) {
+                                c.resetFrame(frameIndex);
+                                evt.stopPropagation();
+                            }
+                        }),                        
                         h("i.insert-after.fa.fa-arrow-circle-down", {
                             title: Jed.sprintf(_("Insert selection after frame %d"), frameIndex + 1),
                             onclick(evt) {
