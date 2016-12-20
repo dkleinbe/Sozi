@@ -102,7 +102,7 @@ export var SVGDocument = {
 
             // Remove attributes that prevent correct rendering
             this.root.removeAttribute("viewBox");
-            this.root.style.width = this.root.style.height = "auto";
+            //this.root.style.width = this.root.style.height = "auto";
 
             // Remove any existing script inside the SVG DOM tree
             var scripts = toArray(this.root.getElementsByTagName("script"));

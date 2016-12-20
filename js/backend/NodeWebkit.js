@@ -59,7 +59,10 @@ NodeWebkit.init = function (container, _) {
     // check that the file exists and load it.
     // Open a file chooser if no file name was provided or
     // the file does not exist.
-    if (gui.App.argv.length > 0) {
+    //
+    // DKL length > 1 when --enable-logging used
+    //
+    if (gui.App.argv.length > 1) {
         var fileName = path.resolve(cwd, gui.App.argv[0]);
         try {
             fs.accessSync(fileName);
