@@ -91,7 +91,11 @@ Toolbar.render = function () {
                 title: _("Redo (Ctrl-Y)"),
                 disabled: c.redoStack.length ? undefined : "disabled",
                 onclick() { c.redo(); }
-            }, h("i.fa.fa-share")) // "share" icon preferred to the official "redo" icon
+            }, h("i.fa.fa-share")), // "share" icon preferred to the official "redo" icon
+            h("button", {
+                title: _("Reset current selection"),
+                onclick() { c.resetFrame(); }
+            }, h("i.fa.fa-eraser")) // "share" icon preferred to the official "redo" icon
         ]),
         h("span.group",
             h("button", {
