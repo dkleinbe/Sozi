@@ -3,6 +3,7 @@ node_modules
 vendor
 bower_components
 build
+dist
 cache
 tmp
 /js/backend/GoogleDrive.config.js
