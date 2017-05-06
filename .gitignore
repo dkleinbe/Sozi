@@ -8,5 +8,5 @@ cache
 tmp
 /js/backend/GoogleDrive.config.js
 npm-debug.log
-buildConfig*.js
+# buildConfig*.js
 *sublime*
