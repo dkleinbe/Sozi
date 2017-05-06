@@ -2,8 +2,9 @@
 // and disable code uglify for better debugging
 var buildConfig = {
     platforms: [
-        "win64"
+        "win32-x64"
     ],
+    electronVersion: "1.2.0",
     uglifyOptions: {
         compress: false,
         mangle: false,
