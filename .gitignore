@@ -5,5 +5,7 @@ bower_components
 build
 dist
 cache
+tmp
 /js/backend/GoogleDrive.config.js
 npm-debug.log
+# buildConfig*.js

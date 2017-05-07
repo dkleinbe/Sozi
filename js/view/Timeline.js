@@ -343,7 +343,7 @@ Timeline.render = function () {
                                 c.moveFrames(frameIndex);
                                 evt.stopPropagation();
                             }
-                        }),
+                        }),                    
                         h("i.insert-after.fa.fa-arrow-circle-down", {
                             title: Jed.sprintf(_("Insert selection after frame %d"), frameIndex + 1),
                             onclick(evt) {

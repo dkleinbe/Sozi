@@ -23,10 +23,11 @@ const ROTATE_STEP = 5;
 
 export const Player = Object.create(EventEmitter.prototype);
 
-Player.init = function (viewport, presentation) {
+Player.init = function (viewport, presentation, editMode) {
     EventEmitter.call(this);
     this.viewport = viewport;
     this.presentation = presentation;
+    this.editMode = !!editMode;
     this.animator = Object.create(Animator).init();
     this.playing = false;
     this.waitingTimeout = false;
@@ -34,6 +35,7 @@ Player.init = function (viewport, presentation) {
     this.targetFrameIndex = 0;
     this.timeoutHandle = null;
     this.transitions = [];
+    this.previewTransitions = false;
 
     this.setupEventHandlers();
     return this;
@@ -228,6 +230,7 @@ Player.pause = function () {
         this.waitingTimeout = false;
     }
     this.playing = false;
+    this.previewTransitions = false;
     this.targetFrameIndex = this.currentFrameIndex;
     return this;
 };
@@ -236,6 +239,7 @@ Player.pause = function () {
  * Resume playing from the current frame.
  */
 Player.resume = function () {
+    this.previewTransitions = true;
     this.playFromIndex(this.currentFrameIndex);
     return this;
 };

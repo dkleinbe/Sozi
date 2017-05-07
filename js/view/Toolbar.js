@@ -11,13 +11,15 @@ import pkg from "../../package.json";
 
 export const Toolbar = Object.create(VirtualDOMView);
 
-Toolbar.init = function (container, storage, presentation, viewport, controller, locale) {
+Toolbar.init = function (container, storage, presentation, viewport, controller, locale, player) {
     VirtualDOMView.init.call(this, container, controller);
 
     this.storage = storage;
     this.presentation = presentation;
     this.viewport = viewport;
     this.gettext = s => locale.gettext(s);
+    this.player = player;
+
 
     return this;
 };
@@ -26,6 +28,8 @@ Toolbar.render = function () {
     const _ = this.gettext;
     const c = this.controller;
     const v = this.viewport;
+    const p = this.player;
+
     return h("div", [
         h("span.group", [
             _("Aspect ratio: "),
@@ -91,17 +95,30 @@ Toolbar.render = function () {
                 title: _("Redo (Ctrl-Y)"),
                 disabled: c.redoStack.length ? undefined : "disabled",
                 onclick() { c.redo(); }
-            }, h("i.fa.fa-share")) // "share" icon preferred to the official "redo" icon
+            }, h("i.fa.fa-share")), // "share" icon preferred to the official "redo" icon
+            h("button", {
+                title: _("Reset current selection"),
+                onclick() { c.resetFrame(); }
+            }, h("i.fa.fa-eraser")) // "share" icon preferred to the official "redo" icon
         ]),
-        h("span.group",
+        h("span.group.btn-group", [
             h("button", {
                 title: screenfull.isFullscreen ? _("Disable full-screen mode (F11)") : _("Enable full-screen mode (F11)"),
                 id: "btn-fullscreen",
                 className: screenfull.isFullscreen ? "active" : undefined,
                 disabled: !screenfull.enabled,
                 onclick() { screenfull.toggle(document.documentElement); }
-            }, h("i.fa.fa-desktop"))
-        ),
+            }, h("i.fa.fa-desktop")),
+            h("button", {
+                title: _("Preview transitions (P)"),
+                id: "btn-preview-transitions",
+                className: p.previewTransitions ? "active" : undefined,
+                onclick() {
+                    p.previewTransitions ? p.pause() : p.resume();
+                    c.emit("repaint");
+                }
+            }, h("i.fa.fa-play-circle"))
+        ]),
         h("span.group.btn-group", [
             h("button", {
                 title: _("Save the presentation (Ctrl-S)"),

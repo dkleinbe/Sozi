@@ -2,7 +2,7 @@
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
-"use strict";
+ "use strict";
 
 import {Frame, LayerProperties} from "./model/Presentation";
 import {CameraState} from "./model/CameraState";
@@ -54,7 +54,51 @@ Controller.setSVGDocument = function (svgDocument) {
     this.presentation.init(svgDocument);
     this.emit("loadSVG");
 };
+/*
+ * Reset frame
+ */
+Controller.resetFrame = function () {
+    //this.undoAll();
+    
+    if (this.selection.currentFrame) {
+        var currentFrame = this.selection.currentFrame;
+        var frameIndex = this.selection.currentFrame.index;
+        //frame.reset(this.presentation.viewport);
 
+        if (currentFrame) {
+            var savedFrame = Object.create(Frame).initFrom(currentFrame, true);
+            //var modifiedFrame = Object.create(Frame).init(this.presentation);
+            var modifiedFrame = Object.create(Frame).initFrom(currentFrame, true);
+
+            modifiedFrame.resetLayers(this.selection.selectedLayers);
+            // this.selection.selectedLayers.forEach(layer => {
+            //     var id = currentFrame.layerProperties[layer.index].referenceElementId;
+            //     var elt = this.presentation.document.root.getElementById(id);
+            //     if (elt) {
+            //         hasReferenceElement = true;
+            //         modifiedFrame.cameraStates[layer.index].setAtElement(elt).resetClipping();
+            //     }
+            // });            
+            this.perform(
+                function onDo() {
+                    currentFrame.setAtStates(modifiedFrame.cameraStates);
+                    
+                    this.selection.selectedLayers.forEach(layer => {
+                        currentFrame.layerProperties[layer.index].link = false;
+                    });
+                    this.presentation.updateLinkedLayers();
+                },
+                function onUndo() {
+                    currentFrame.initFrom(savedFrame);
+                    this.presentation.updateLinkedLayers();
+                },
+                false,
+                ["presentationChange", "repaint"]
+                );
+        }
+    }
+    
+};
 /*
  * Add a frame to the presentation.
  *
@@ -100,7 +144,7 @@ Controller.addFrame = function () {
         },
         true,
         ["presentationChange", "editorStateChange", "repaint"]
-    );
+        );
 };
 
 /*
@@ -193,7 +237,7 @@ Controller.moveFrames = function (toFrameIndex) {
             this.presentation.updateLinkedLayers();
         },
         false,
-        ["presentationChange", "editorStateChange", "repaint"]
+        ["presentationChange", "editorStateChange", "frameChange", "repaint"]
     );
 };
 
@@ -207,6 +251,7 @@ Controller.selectLayers = function (layers) {
     this.selection.selectedLayers = layers.slice();
     this.updateCameraSelection();
     this.emit("editorStateChange");
+    this.emit("frameChange");
     this.emit("repaint");
 };
 
@@ -290,6 +335,7 @@ Controller.updateFrameSelection = function (single, sequence, frameIndex) {
 
     // Trigger a repaint of the editor views.
     this.emit("editorStateChange");
+    this.emit("frameChange");
     this.emit("repaint");
 };
 
@@ -371,6 +417,7 @@ Controller.updateLayerAndFrameSelection = function (single, sequence, layers, fr
 
     // Trigger a repaint of the editor views.
     this.emit("editorStateChange");
+    this.emit("frameChange");
     this.emit("repaint");
 };
 
@@ -761,3 +808,4 @@ Controller.redo = function () {
     action.onDo.call(this);
     action.events.forEach(evt => { this.emit(evt); });
 };
+

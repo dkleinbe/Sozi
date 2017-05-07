@@ -8,12 +8,13 @@ const PREVIEW_MARGIN = 15;
 
 export const Preview = {
 
-    init(container, presentation, selection, viewport, controller) {
+    init(container, presentation, selection, viewport, controller, player) {
         this.container = container;
         this.presentation = presentation;
         this.selection = selection;
         this.viewport = viewport;
         this.controller = controller;
+        this.player = player;
 
         controller.addListener("loadSVG", () => this.onLoadSVG());
         window.addEventListener("resize", () => this.repaint());
@@ -25,8 +26,10 @@ export const Preview = {
         this.viewport.addListener("click", (btn, evt) => this.onClick(btn, evt));
         this.viewport.addListener("userChangeState", () => this.controller.updateCameraStates());
         this.controller.addListener("repaint", () => this.repaint());
+        this.controller.addListener("frameChange", () => this.onFrameChange());
         this.container.addEventListener("mouseenter", () => this.onMouseEnter(), false);
         this.container.addEventListener("mouseleave", () => this.onMouseLeave(), false);
+        this.player.addListener("frameChange", () => this.onAnimatorDone());
 
         // Set the window title to the presentation title
         document.querySelector("html head title").innerHTML = this.presentation.title;
@@ -102,5 +105,22 @@ export const Preview = {
         });
         this.viewport.showHiddenElements = false;
         this.viewport.repaint();
+    },
+
+    onFrameChange() {
+        if (this.player.previewTransitions) {
+            this.player.moveToFrame(this.selection.currentFrame.index);
+        }
+        else {
+            this.player.jumpToFrame(this.selection.currentFrame.index);
+        }
+    },
+
+    onAnimatorDone() {
+        if (this.selection.currentFrame.index !== this.player.currentFrameIndex) {
+            this.controller.selectFrame(this.player.currentFrameIndex);
+        }
+        this.controller.emit("editorStateChange");
+        this.controller.emit("repaint");
     }
 };

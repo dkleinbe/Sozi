@@ -45,7 +45,7 @@ Electron.init = function (container, _) {
     // check that the file exists and load it.
     // Open a file chooser if no file name was provided or
     // the file does not exist.
-    if (remote.process.argv.length > 1) {
+    if (remote.process.argv.length > 30) {
         const fileName = path.resolve(cwd, remote.process.argv[1]);
         try {
             fs.accessSync(fileName);
