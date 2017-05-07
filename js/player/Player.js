@@ -42,11 +42,13 @@ Player.init = function (viewport, presentation, editMode) {
 };
 
 Player.setupEventHandlers = function () {
-    this.viewport.addListener("click", btn => this.onClick(btn));
-    this.viewport.addListener("dragStart", () => this.pause());
-    this.viewport.addListener("userChangeState", () => this.pause());
-    window.addEventListener("keydown", evt => this.onKeyDown(evt), false);
-    window.addEventListener("keypress", evt => this.onKeyPress(evt), false);
+    if (!this.editMode) {
+        this.viewport.addListener("click", btn => this.onClick(btn));
+        this.viewport.addListener("dragStart", () => this.pause());
+        this.viewport.addListener("userChangeState", () => this.pause());
+        window.addEventListener("keydown", evt => this.onKeyDown(evt), false);
+        window.addEventListener("keypress", evt => this.onKeyPress(evt), false);
+    }
     this.animator.addListener("step", p => this.onAnimatorStep(p));
     this.animator.addListener("stop", () => this.onAnimatorStop());
     this.animator.addListener("done", () => this.onAnimatorDone());
@@ -496,9 +498,11 @@ Player.enableBlankScreen = function () {
 };
 
 Player.disableBlankScreen = function () {
-    const blankScreen = document.querySelector(".sozi-blank-screen");
-    blankScreen.style.opacity = 0;
-    blankScreen.style.visibility = "hidden";
+    if (!this.editMode) {
+        const blankScreen = document.querySelector(".sozi-blank-screen");
+        blankScreen.style.opacity = 0;
+        blankScreen.style.visibility = "hidden";
+    }
 };
 
 Player.toggleBlankScreen = function () {
