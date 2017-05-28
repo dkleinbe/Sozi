@@ -29,12 +29,13 @@ window.addEventListener("load", () => {
     Viewport.init(Presentation, true);
     Player.init(Viewport, Presentation, true);
 
-    Controller.init(Storage, Presentation, Selection, Viewport);
+    Controller.init(Storage, Presentation, Selection, Timeline, Viewport);
 
     Preview.init(document.getElementById("sozi-editor-view-preview"), Presentation, Selection, Viewport, Controller, Player);
 
     const locale = i18n.init();
-    Properties.init(document.getElementById("sozi-editor-view-properties"), Selection, Controller, locale);
+
+    Properties.init(document.getElementById("sozi-editor-view-properties"), Selection, Controller, Timeline, locale);
     Toolbar.init(document.getElementById("sozi-editor-view-toolbar"), Storage, Presentation, Viewport, Controller, locale, Player);
     Timeline.init(document.getElementById("sozi-editor-view-timeline"), Presentation, Selection, Controller, locale);
     Storage.init(Controller, SVGDocumentWrapper, Presentation, Selection, Timeline, locale);
@@ -142,6 +143,9 @@ window.addEventListener("load", () => {
                     break;
                 case 122: // F11
                     document.getElementById('btn-fullscreen').click();
+                    break;
+                case 123: // F12
+                    Storage.backend.toggleDevTools();
                     break;
                 default:
                     return;
