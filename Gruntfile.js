@@ -99,16 +99,20 @@ module.exports = function(grunt) {
 
         jspot: {
             options: {
-                keyword: "_"
+                keyword: "_",
+                parserOptions: {
+                    sourceType: "module"
+                }
             },
             all: {
-                src: ["build/app/js/**/*.js"],
+                src: ["js/**/*.js"],
                 dest: "locales"
             }
         },
 
         po2json: {
             options: {
+                fuzzy: false,
                 singleFile: true,
                 nodeJs: true,
                 format: "jed1.x"
@@ -273,6 +277,22 @@ module.exports = function(grunt) {
      * Compress electron bundles for each platform
      */
     buildConfig.platforms.forEach(function (platform) {
+        var platformOs = platform.split("-")[0];
+        grunt.config(["copy", platform], {
+            "files": [{
+                expand: true,
+                flatten: true,
+                src: "installation-assets/" + platformOs + "/*",
+                dest: "dist/Sozi-" + platform + "/install/"
+            }, {
+                src: "icons/icon-256.png",
+                dest: "dist/Sozi-" + platform + "/install/sozi.png"
+            }],
+            "options": {
+                mode: true
+            }
+        });
+
         var destName = "Sozi-" + pkg.version + "-" + platform;
         grunt.config(["rename", platform], {
             src: "dist/Sozi-" + platform,
@@ -291,6 +311,12 @@ module.exports = function(grunt) {
             src: [destName + "/**/*"]
         });
     });
+
+    grunt.registerTask("copy-installation-assets", buildConfig.platforms.reduce(function (prev, platform) {
+        var platformOs = platform.split("-")[0];
+        var installationTask = buildConfig.installable.includes(platformOs) ? ["copy:" + platform] : [];
+        return prev.concat(installationTask);
+    }, []));
 
     grunt.registerTask("electron-platforms", buildConfig.platforms.reduce(function (prev, platform) {
         return prev.concat(["rename:" + platform, "compress:" + platform]);
@@ -324,7 +350,8 @@ module.exports = function(grunt) {
         "rename:electron_backend",
         "rename:electron_html",
         "install-dependencies",
-        "electron"
+        "electron",
+        "copy-installation-assets"
     ]);
 
     grunt.registerTask("web-build", [
