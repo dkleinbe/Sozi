@@ -98,7 +98,7 @@ Toolbar.render = function () {
             }, h("i.fa.fa-share")), // "share" icon preferred to the official "redo" icon
             h("button", {
                 title: _("Reset current selection"),
-                onclick() { c.resetFrame(); }
+                onclick() { c.resetLayer(); }
             }, h("i.fa.fa-eraser")) // "share" icon preferred to the official "redo" icon
         ]),
         h("span.group.btn-group", [

@@ -55,51 +55,7 @@ Controller.setSVGDocument = function (svgDocument) {
     this.presentation.init(svgDocument);
     this.emit("loadSVG");
 };
-/*
- * Reset frame
- */
-Controller.resetFrame = function () {
-    //this.undoAll();
-    
-    if (this.selection.currentFrame) {
-        var currentFrame = this.selection.currentFrame;
-        var frameIndex = this.selection.currentFrame.index;
-        //frame.reset(this.presentation.viewport);
 
-        if (currentFrame) {
-            var savedFrame = Object.create(Frame).initFrom(currentFrame, true);
-            //var modifiedFrame = Object.create(Frame).init(this.presentation);
-            var modifiedFrame = Object.create(Frame).initFrom(currentFrame, true);
-
-            modifiedFrame.resetLayers(this.selection.selectedLayers);
-            // this.selection.selectedLayers.forEach(layer => {
-            //     var id = currentFrame.layerProperties[layer.index].referenceElementId;
-            //     var elt = this.presentation.document.root.getElementById(id);
-            //     if (elt) {
-            //         hasReferenceElement = true;
-            //         modifiedFrame.cameraStates[layer.index].setAtElement(elt).resetClipping();
-            //     }
-            // });            
-            this.perform(
-                function onDo() {
-                    currentFrame.setAtStates(modifiedFrame.cameraStates);
-                    
-                    this.selection.selectedLayers.forEach(layer => {
-                        currentFrame.layerProperties[layer.index].link = false;
-                    });
-                    this.presentation.updateLinkedLayers();
-                },
-                function onUndo() {
-                    currentFrame.initFrom(savedFrame);
-                    this.presentation.updateLinkedLayers();
-                },
-                false,
-                ["presentationChange", "repaint"]
-                );
-        }
-    }
-    
-};
 /*
  * Add a frame to the presentation.
  *

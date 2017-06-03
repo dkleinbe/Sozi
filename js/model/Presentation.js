@@ -161,17 +161,6 @@ export const Frame = {
         return this;
     },
 
-    resetLayers(layers) {
-        //
-        // foreach layers set at element to original element
-        //
-        layers.forEach((layer, index) => {
-            if (layer.svgNodes.length) {
-                this.cameraStates[layer.index].setAtElement(layer.svgNodes[0]);
-            }
-        });
-    },
-
     toStorable() {
         const layerProperties = {};
         const cameraStates = {};
@@ -366,9 +355,13 @@ export const Presentation = {
 
         this.layers.push(autoLayer);
 
-        this.initialCameraState = Object.create(CameraState).init(svgDocument.root);
+        //this.initialCameraState = Object.create(CameraState).init(svgDocument.root);
 
         return this;
+    },
+
+    setInitialCameraState() {
+        this.initialCameraState = Object.create(CameraState).init(this.document.root);
     },
 
     toStorable() {
