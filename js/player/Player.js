@@ -358,6 +358,7 @@ Player.moveToFrame = function (index) {
         let timingFunction = Timing[DEFAULT_TIMING_FUNCTION];
         let relativeZoom = DEFAULT_RELATIVE_ZOOM;
         let transitionPath = null;
+        let transitionPathToCam = true;
 
         if (layerProperties) {
             const lp = layerProperties[camera.layer.index];
@@ -365,13 +366,14 @@ Player.moveToFrame = function (index) {
             timingFunction = Timing[lp.transitionTimingFunction];
             if (useTransitionPath) {
                 transitionPath = lp.transitionPath;
+                transitionPathToCam = lp.transitionPathToCam;
             }
             if (backwards) {
                 timingFunction = timingFunction.reverse;
             }
         }
 
-        this.setupTransition(camera, timingFunction, relativeZoom, transitionPath, backwards);
+        this.setupTransition(camera, timingFunction, relativeZoom, transitionPath, transitionPathToCam, backwards);
     });
 
     this.animator.start(durationMs);
@@ -444,7 +446,7 @@ Player.previewFrame = function (index) {
     return this;
 };
 
-Player.setupTransition = function (camera, timingFunction, relativeZoom, svgPath, reverse) {
+Player.setupTransition = function (camera, timingFunction, relativeZoom, svgPath, pathToCam, reverse) {
     if (this.animator.running) {
         this.animator.stop();
     }
@@ -456,6 +458,7 @@ Player.setupTransition = function (camera, timingFunction, relativeZoom, svgPath
         timingFunction,
         relativeZoom,
         svgPath,
+        pathToCam,
         reverse
     });
 
@@ -464,7 +467,7 @@ Player.setupTransition = function (camera, timingFunction, relativeZoom, svgPath
 
 Player.onAnimatorStep = function (progress) {
     this.transitions.forEach(transition => {
-        transition.camera.interpolate(transition.initialState, transition.finalState, progress, transition.timingFunction, transition.relativeZoom, transition.svgPath, transition.reverse);
+        transition.camera.interpolate(transition.initialState, transition.finalState, progress, transition.timingFunction, transition.relativeZoom, transition.svgPath, transition.pathToCam, transition.reverse);
         transition.camera.update();
     });
 };

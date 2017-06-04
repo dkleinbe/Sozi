@@ -113,8 +113,12 @@ Properties.render = function () {
 
         h("label", {for: "field-transitionPathId"}, [
             _("Path Id"),
-            this.renderToggleField(h("i.fa.fa-eye-slash"), _("Hide path"), "transitionPathHide", c.getLayerProperty, c.setLayerProperty)
+            h("span.btn-group", [
+                this.renderToggleField(h("i.fa.fa-eye-slash"), _("Hide path"), "transitionPathHide", c.getLayerProperty, c.setLayerProperty),
+                this.renderToggleField(h("i.fa.fa-video-camera"), _("Path to cam"), "transitionPathToCam", c.getLayerProperty, c.setLayerProperty)
+            ])
         ]),
+
         this.renderTextField("transitionPathId", false, c.getLayerProperty, c.setLayerProperty, true)
     ]);
 };

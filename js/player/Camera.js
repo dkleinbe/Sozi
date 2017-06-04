@@ -272,7 +272,7 @@ Camera.update = function () {
     return this;
 };
 
-Camera.interpolate = function (initialState, finalState, progress, timingFunction, relativeZoom, svgPath, reversePath) {
+Camera.interpolate = function (initialState, finalState, progress, timingFunction, relativeZoom, svgPath, pathToCam, reversePath) {
     const tfProgress = timingFunction(progress);
     const tfRemaining = 1 - tfProgress;
 
@@ -307,9 +307,14 @@ Camera.interpolate = function (initialState, finalState, progress, timingFunctio
         const startPoint   = svgPath.getPointAtLength(reversePath ? pathLength : 0);
         const endPoint     = svgPath.getPointAtLength(reversePath ? 0 : pathLength);
         const currentPoint = svgPath.getPointAtLength(pathLength * (reversePath ? tfRemaining : tfProgress));
-
-        this.cx = currentPoint.x + linear(initialState.cx - startPoint.x, finalState.cx - endPoint.x);
-        this.cy = currentPoint.y + linear(initialState.cy - startPoint.y, finalState.cy - endPoint.y);
+      
+        if (pathToCam) {
+            this.cx = currentPoint.x + linear(initialState.cx - startPoint.x, finalState.cx - endPoint.x);
+            this.cy = currentPoint.y + linear(initialState.cy - startPoint.y, finalState.cy - endPoint.y);
+        } else {
+            this.cx = -currentPoint.x + linear(initialState.cx + startPoint.x, finalState.cx + endPoint.x);
+            this.cy = -currentPoint.y + linear(initialState.cy + startPoint.y, finalState.cy + endPoint.y);
+        }
     }
     else {
         this.cx = linear(initialState.cx, finalState.cx);

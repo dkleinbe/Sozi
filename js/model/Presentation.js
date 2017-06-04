@@ -22,6 +22,7 @@ export const LayerProperties = {
     transitionTimingFunction: "linear",
     transitionRelativeZoom: 0,
     transitionPathId: "",
+    transitionPathToCam: true,
 
     init(frame) {
         this.frame = frame;
@@ -37,6 +38,7 @@ export const LayerProperties = {
         this.transitionTimingFunction = other.transitionTimingFunction;
         this.transitionRelativeZoom = other.transitionRelativeZoom;
         this.transitionPathId = other.transitionPathId;
+        this.transitionPathToCam = other.transitionPathToCam;
         return this;
     },
 
@@ -48,7 +50,8 @@ export const LayerProperties = {
             outlineElementAuto: this.outlineElementAuto,
             transitionTimingFunction: this.transitionTimingFunction,
             transitionRelativeZoom: this.transitionRelativeZoom,
-            transitionPathId: this.transitionPathId
+            transitionPathId: this.transitionPathId,
+            transitionPathToCam: this.transitionPathToCam
         };
     },
 
@@ -56,7 +59,8 @@ export const LayerProperties = {
         return {
             transitionTimingFunction: this.transitionTimingFunction,
             transitionRelativeZoom: this.transitionRelativeZoom,
-            transitionPathId: this.transitionPathId
+            transitionPathId: this.transitionPathId,
+            transitionPathToCam: this.transitionPathToCam
         };
     },
 
@@ -68,6 +72,7 @@ export const LayerProperties = {
         copyIfSet(this, storable, "transitionTimingFunction");
         copyIfSet(this, storable, "transitionRelativeZoom");
         copyIfSet(this, storable, "transitionPathId");
+        copyIfSet(this, storable, "transitionPathToCam");
         return this;
     },
 
