@@ -309,9 +309,11 @@ Camera.interpolate = function (initialState, finalState, progress, timingFunctio
         const currentPoint = svgPath.getPointAtLength(pathLength * (reversePath ? tfRemaining : tfProgress));
       
         if (pathToCam) {
+            // path is applied to camera (default)
             this.cx = currentPoint.x + linear(initialState.cx - startPoint.x, finalState.cx - endPoint.x);
             this.cy = currentPoint.y + linear(initialState.cy - startPoint.y, finalState.cy - endPoint.y);
         } else {
+            // path is applied to layer: behave like if we ware applying a (-x, -y) path
             this.cx = -currentPoint.x + linear(initialState.cx + startPoint.x, finalState.cx + endPoint.x);
             this.cy = -currentPoint.y + linear(initialState.cy + startPoint.y, finalState.cy + endPoint.y);
         }

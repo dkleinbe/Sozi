@@ -111,14 +111,18 @@ Properties.render = function () {
         h("label", {for: "field-transitionRelativeZoom"}, _("Relative zoom (%)")),
         this.renderNumberField("transitionRelativeZoom", false, c.getLayerProperty, c.setLayerProperty, true, 1, 0.01),
 
-        h("label", {for: "field-transitionPathId"}, [
-            _("Path Id"),
-            h("span.btn-group", [
-                this.renderToggleField(h("i.fa.fa-eye-slash"), _("Hide path"), "transitionPathHide", c.getLayerProperty, c.setLayerProperty),
-                this.renderToggleField(h("i.fa.fa-video-camera"), _("Path to cam"), "transitionPathToCam", c.getLayerProperty, c.setLayerProperty)
-            ])
+        h("label", {for: "field-transitionPathTarget"}, [
+            _("Apply path to"),
+            this.renderToggleGroup("transitionPathToCam", c.getLayerProperty, c.setLayerProperty, 
+                {"i.fa.fa-video-camera" : ["Apply path to camera", true], 
+                 "i.fa.fa-picture-o" : ["Apply path to layer", false]
+             })
         ]),
 
+        h("label", {for: "field-transitionPathId"}, [
+            _("Path Id"),
+            this.renderToggleField(h("i.fa.fa-eye-slash"), _("Hide path"), "transitionPathHide", c.getLayerProperty, c.setLayerProperty),
+        ]),
         this.renderTextField("transitionPathId", false, c.getLayerProperty, c.setLayerProperty, true)
     ]);
 };
@@ -234,3 +238,18 @@ Properties.renderSelectField = function (property, getter, setter, options) {
         )
     );
 };
+
+Properties.renderToggleGroup = function(property, getter, setter, btngrp) {
+    const c = this.controller;
+
+    const values = getter.call(c, property);
+    const className = values.length > 1 ? "multiple" : undefined;
+    const value = values.length > 1 ? undefined : values[0];
+
+    return h("span.group.btn-group", [
+        Object.keys(btngrp).map(btn => h("button", { 
+            title: btngrp[btn][0], 
+            className: (value === btngrp[btn][1]) ? "active" : className,
+            onclick() { setter.call(c, property, btngrp[btn][1]); } }, h(btn)))
+    ]);
+}
